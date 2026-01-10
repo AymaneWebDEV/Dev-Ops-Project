@@ -3,3 +3,5 @@ const Card = ({ children, className = '' }) => (
     {children}
   </div>
 );
+
+export default Card;

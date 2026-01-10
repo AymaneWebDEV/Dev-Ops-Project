@@ -8,3 +8,5 @@ const Input = ({ label, error, ...props }) => (
     {error && <span className="text-xs text-red-500">{error}</span>}
   </div>
 );
+
+export default Input;
