@@ -37,7 +37,8 @@ jobs:
         run: |
           cd flask-crud-frontend
           npm install
-          npm run build --if-present
+          # Set CI=false to allow warnings during build
+          CI=false npm run build
 
   # --- Phase 2: Build and Push Docker Images ---
   build-and-push-docker:

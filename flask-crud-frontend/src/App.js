@@ -16,7 +16,7 @@ export default function App() {
     }, 300);
 
     return () => clearTimeout(timer);
-  }, [searchQuery]);
+  }, [searchQuery, loadItems]);
 
   const handleSubmit = async (formData) => {
     if (editingItem) {
