@@ -14,63 +14,39 @@ const useItems = () => {
       setItems(response.data);
     } catch (err) {
       setError(err.message || 'Failed to load items');
-      console.error(err);
     } finally {
       setLoading(false);
     }
   }, []);
 
   const addItem = useCallback(async (data) => {
-    setLoading(true);
-    setError(null);
     try {
       await createItem(data);
       await loadItems();
     } catch (err) {
-      setError(err.message || 'Failed to create item');
-      console.error(err);
-    } finally {
-      setLoading(false);
+      setError('Failed to create item');
     }
   }, [loadItems]);
 
   const editItem = useCallback(async (id, data) => {
-    setLoading(true);
-    setError(null);
     try {
       await updateItem(id, data);
       await loadItems();
     } catch (err) {
-      setError(err.message || 'Failed to update item');
-      console.error(err);
-    } finally {
-      setLoading(false);
+      setError('Failed to update item');
     }
   }, [loadItems]);
 
   const removeItem = useCallback(async (id) => {
-    setLoading(true);
-    setError(null);
     try {
       await deleteItem(id);
       await loadItems();
     } catch (err) {
-      setError(err.message || 'Failed to delete item');
-      console.error(err);
-    } finally {
-      setLoading(false);
+      setError('Failed to delete item');
     }
   }, [loadItems]);
 
-  return {
-    items,
-    loading,
-    error,
-    loadItems,
-    addItem,
-    editItem,
-    removeItem,
-  };
+  return { items, loading, error, loadItems, addItem, editItem, removeItem };
 };
 
 export default useItems;
