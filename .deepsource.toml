@@ -1,37 +1,29 @@
 version = 1
 
-# Exclude folders we don't want to scan
-exclude = [
-  "venv/**",
-  "__pycache__/**",
-  "node_modules/**",
-  "build/**",
-  "dist/**"
+# Exclude folders that shouldn't be scanned
+exclude_patterns = [
+  "**/venv/**",
+  "**/__pycache__/**",
+  "**/node_modules/**",
+  "**/build/**",
+  "**/dist/**"
 ]
 
-[analyzers]
+[[analyzers]]
+name = "python"
+enabled = true
 
-  [analyzers.python]
-  enabled = true
-  version = "3.11"
+  [analyzers.meta]
+  runtime_version = "3.x"
+  # This tells DeepSource where your Python code lives
+  test_patterns = ["flask-mysql-crud/tests/**"] 
 
-  [analyzers.python.config]
-  # Enable specific Python analyzers/tools
-  # Available: flake8, pylint, bandit, mypy
-  flake8 = true
-  pylint = true
-  bandit = true
-  mypy = true
+[[analyzers]]
+name = "javascript"
+enabled = true
 
-  # Optional: ignore certain rules
-  ignore = ["E501"]  # long lines
-
-  [analyzers.javascript]
-  enabled = true
-  version = "18"
-
-  [analyzers.javascript.config]
-  eslint = true
+  [analyzers.meta]
+  runtime_version = "18"
 
 [autofix]
 enabled = true
