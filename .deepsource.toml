@@ -1,1 +1,41 @@
 version = 1
+
+# Files/folders to include (optional)
+# By default, all files are included
+# include = ["backend/**", "frontend/**"]
+
+# Files/folders to exclude
+exclude = [
+    "node_modules/**",
+    "venv/**",
+    "__pycache__/**",
+    "build/**",
+    "dist/**"
+]
+
+[analyzers]
+
+  # Python analyzer for your Flask backend
+  [analyzers.python]
+  enabled = true
+  version = "3.11"  # match your Python version
+  # Optional: extra linters/tools
+  # flake8: linting
+  # bandit: security
+  # pylint: code style
+  # mypy: type checking
+  extra_args = [
+    "--ignore=E501",  # ignore long lines if needed
+  ]
+
+  # JavaScript/React analyzer for frontend
+  [analyzers.javascript]
+  enabled = true
+  # Node.js version for the analyzer
+  version = "18"
+  # Optional: extra args for eslint
+  # You can customize rules via .eslintrc if you want
+  extra_args = []
+
+[autofix]
+enabled = true
