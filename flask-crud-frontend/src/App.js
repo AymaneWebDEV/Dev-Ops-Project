@@ -1,9 +1,8 @@
 import { useState, useEffect } from 'react';
-import { fetchItems, createItem, updateItem, deleteItem } from './Api';
 import useItems from './hooks/useItems';
-import ItemForm from './components/ItemForm';
 import SearchBar from './components/SearchBar';
 import ItemList from './components/ItemList';
+import ItemForm from './components/ItemForm';
 
 export default function App() {
   const [searchQuery, setSearchQuery] = useState('');
