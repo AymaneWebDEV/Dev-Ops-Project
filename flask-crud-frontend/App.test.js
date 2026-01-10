@@ -1,12 +1,12 @@
 import { render, screen } from '@testing-library/react';
 import App from './App';
-import useItems from './hooks/useItems'; // Adjust the path if your hook is elsewhere
+import useItems from './hooks/useItems'; // Verify this path matches your file structure
 
-// 1. Mock the useItems hook
+// 1. Mock the entire module containing the hook
 jest.mock('./hooks/useItems');
 
-test('renders the application header', () => {
-  // 2. Define what the mock should return
+test('renders the application UI successfully', () => {
+  // 2. Define exactly what the mock hook should return for this test
   useItems.mockReturnValue({
     items: [],
     loading: false,
@@ -19,7 +19,7 @@ test('renders the application header', () => {
 
   render(<App />);
   
-  // 3. Check for a piece of text that exists in your UI
-  const titleElement = screen.getByText(/Item/i); 
-  expect(titleElement).toBeInTheDocument();
+  // 3. Look for a common element in your UI (e.g., an "Add Item" button or title)
+  const element = screen.getByText(/Item/i); 
+  expect(element).toBeInTheDocument();
 });
