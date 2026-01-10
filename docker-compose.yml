@@ -26,9 +26,7 @@ services:
       - "8000:8000"
 
   frontend:
-    build:
-      context: ./flask-crud-frontend
-      dockerfile: Dockerfile
+    image: aymanewebdev/flask-frontend:latest
     depends_on:
       - api
     ports:
