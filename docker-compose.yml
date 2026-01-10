@@ -1,0 +1,36 @@
+services:
+  db:
+    image: mysql:8.0
+    environment:
+      MYSQL_ROOT_PASSWORD: root
+      MYSQL_DATABASE: app
+      MYSQL_USER: app
+      MYSQL_PASSWORD: app
+    volumes:
+      - db_data:/var/lib/mysql
+    ports:
+      - "3306:3306"
+
+  api:
+    build: ./flask-mysql-crud
+    depends_on:
+      - db
+    environment:
+      MYSQL_HOST: db
+      MYSQL_PORT: 3306
+      MYSQL_USER: app
+      MYSQL_PASSWORD: app
+      MYSQL_DB: app
+      PORT: 8000
+    ports:
+      - "8000:8000"
+
+  frontend:
+    build: ./flask-crud-frontend
+    depends_on:
+      - api
+    ports:
+      - "3000:80"
+
+volumes:
+  db_data:
