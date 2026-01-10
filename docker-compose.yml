@@ -12,7 +12,7 @@ services:
       - "3306:3306"
 
   api:
-    build: ./flask-mysql-crud
+    image: aymanewebdev/flask-backend:latest
     depends_on:
       - db
     environment:
@@ -26,7 +26,7 @@ services:
       - "8000:8000"
 
   frontend:
-    build: ./flask-crud-frontend
+    image: aymanewebdev/flask-frontend:latest
     depends_on:
       - api
     ports:
