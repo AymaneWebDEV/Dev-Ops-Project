@@ -1,0 +1,67 @@
+name: CI/CD Pipeline
+
+on:
+  push:
+    branches: [ "main" ]
+  pull_request:
+    branches: [ "main" ]
+
+jobs:
+  # --- Phase 1: Quality & Tests ---
+  backend-ci:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Set up Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.11'
+      
+      - name: Install Backend Dependencies
+        run: |
+          cd flask-mysql-crud
+          pip install -r requirements.txt
+      
+      # (Optional) Add your test command here, e.g., pytest
+
+  frontend-ci:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '18'
+      
+      - name: Install Frontend Dependencies
+        run: |
+          cd flask-crud-frontend
+          npm install
+          npm run build --if-present
+
+  # --- Phase 2: Build and Push Docker Images ---
+  build-and-push-docker:
+    needs: [backend-ci, frontend-ci]
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Login to Docker Hub
+        uses: docker/login-action@v3
+        with:
+          username: ${{ secrets.DOCKERHUB_USERNAME }}
+          password: ${{ secrets.DOCKERHUB_TOKEN }}
+
+      - name: Build and Push Backend Image
+        uses: docker/build-push-action@v5
+        with:
+          context: ./flask-mysql-crud
+          push: true
+          tags: ${{ secrets.DOCKERHUB_USERNAME }}/flask-backend:latest
+
+      - name: Build and Push Frontend Image
+        uses: docker/build-push-action@v5
+        with:
+          context: ./flask-crud-frontend
+          push: true
+          tags: ${{ secrets.DOCKERHUB_USERNAME }}/flask-frontend:latest
