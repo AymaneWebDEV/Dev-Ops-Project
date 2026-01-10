@@ -7,23 +7,37 @@ on:
     branches: [ "main" ]
 
 jobs:
-  # --- Phase 1: Quality & Tests ---
+  # --- Phase 1: Backend Quality & Integration Tests ---
   backend-ci:
     runs-on: ubuntu-latest
+    services:
+      mysql:
+        image: mysql:8.0
+        env:
+          MYSQL_ROOT_PASSWORD: root
+          MYSQL_DATABASE: test_db
+        ports:
+          - 3306:3306
+        options: --health-cmd="mysqladmin ping" --health-interval=10s --health-timeout=5s --health-retries=3
+
     steps:
       - uses: actions/checkout@v4
       - name: Set up Python
         uses: actions/setup-python@v4
         with:
           python-version: '3.11'
-      
-      - name: Install Backend Dependencies
+      - name: Install Dependencies
         run: |
           cd flask-mysql-crud
-          pip install -r requirements.txt
-      
-      # (Optional) Add your test command here, e.g., pytest
+          pip install -r requirements.txt pytest pymysql
+      - name: Run Backend Tests
+        env:
+          DATABASE_URL: mysql+pymysql://root:root@127.0.0.1:3306/test_db
+        run: |
+          cd flask-mysql-crud
+          pytest test_app.py
 
+  # --- Phase 2: Frontend Quality & Unit Tests ---
   frontend-ci:
     runs-on: ubuntu-latest
     steps:
@@ -37,11 +51,22 @@ jobs:
         run: |
           cd flask-crud-frontend
           npm install
-          # Set CI=false to allow warnings during build
+      
+      - name: Run Frontend Tests
+        run: |
+          cd flask-crud-frontend
+          # Block the build if tests fail
+          CI=true npm test -- --watchAll=false 
+
+      - name: Build Production Assets
+        run: |
+          cd flask-crud-frontend
+          # Standardize build; warnings allowed, but logic errors caught above
           CI=false npm run build
 
-  # --- Phase 2: Build and Push Docker Images ---
+  # --- Phase 3: Build and Push Docker Images ---
   build-and-push-docker:
+    # This only runs if BOTH backend and frontend tests pass
     needs: [backend-ci, frontend-ci]
     runs-on: ubuntu-latest
     steps:
